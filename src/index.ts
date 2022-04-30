@@ -13,9 +13,9 @@ import { createComment } from './util/comment';
         const repo = core.getInput('repo', { required: true });
         const pr_number = parseInt(core.getInput('pr_number', { required: true }));
         const token = core.getInput('token', { required: true });
-        const triggerd_by = core.getInput('triggerd_by', { required: true });
+        const triggered_by = core.getInput('triggered_by', { required: true });
 
-        log.info(`Running action in ${owner}/${repo}#${pr_number} that was triggered by: ${triggerd_by}`);
+        log.info(`Running action in ${owner}/${repo}#${pr_number} that was triggered by: ${triggered_by}`);
 
         /**
          * Now we need to create an instance of Octokit which will use to call

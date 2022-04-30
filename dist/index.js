@@ -8308,6 +8308,12 @@ var createComment = (msg) => msg + signature;
       repo,
       pull_number: pr_number
     });
+    const { data: comments } = await octokit.rest.issues.listComments({
+      owner,
+      repo,
+      issue_number: pr_number
+    });
+    log.info(JSON.stringify(comments, null, 2));
     let diffData = {
       additions: 0,
       deletions: 0,
@@ -8319,39 +8325,6 @@ var createComment = (msg) => msg + signature;
       acc.changes += file.changes;
       return acc;
     }, diffData);
-    for (const file of changedFiles) {
-      const fileExtension = file.filename.split(".").pop();
-      switch (fileExtension) {
-        case "md":
-          await octokit.rest.issues.addLabels({
-            owner,
-            repo,
-            issue_number: pr_number,
-            labels: ["markdown"]
-          });
-        case "js":
-          await octokit.rest.issues.addLabels({
-            owner,
-            repo,
-            issue_number: pr_number,
-            labels: ["javascript"]
-          });
-        case "yml":
-          await octokit.rest.issues.addLabels({
-            owner,
-            repo,
-            issue_number: pr_number,
-            labels: ["yaml"]
-          });
-        case "yaml":
-          await octokit.rest.issues.addLabels({
-            owner,
-            repo,
-            issue_number: pr_number,
-            labels: ["yaml"]
-          });
-      }
-    }
     await octokit.rest.issues.createComment({
       owner,
       repo,

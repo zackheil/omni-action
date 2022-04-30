@@ -38,6 +38,18 @@ import { createComment } from './util/comment';
             repo,
             pull_number: pr_number,
         });
+        const { data: comments } = await octokit.rest.issues.listComments({
+            owner,
+            repo,
+            issue_number: pr_number
+        });
+
+        log.info(JSON.stringify(comments, null, 2))
+        //     rest.issues.getComment({
+        //     owner,
+        //     repo,
+        //     issue_number: pr_number
+        // })
 
 
         /**
@@ -63,42 +75,42 @@ import { createComment } from './util/comment';
          * Loop over all the files changed in the PR and add labels according 
          * to files types.
          **/
-        for (const file of changedFiles) {
-            /**
-             * Add labels according to file types.
-             */
-            const fileExtension = file.filename.split('.').pop();
-            switch (fileExtension) {
-                case 'md':
-                    await octokit.rest.issues.addLabels({
-                        owner,
-                        repo,
-                        issue_number: pr_number,
-                        labels: ['markdown'],
-                    });
-                case 'js':
-                    await octokit.rest.issues.addLabels({
-                        owner,
-                        repo,
-                        issue_number: pr_number,
-                        labels: ['javascript'],
-                    });
-                case 'yml':
-                    await octokit.rest.issues.addLabels({
-                        owner,
-                        repo,
-                        issue_number: pr_number,
-                        labels: ['yaml'],
-                    });
-                case 'yaml':
-                    await octokit.rest.issues.addLabels({
-                        owner,
-                        repo,
-                        issue_number: pr_number,
-                        labels: ['yaml'],
-                    });
-            }
-        }
+        // for (const file of changedFiles) {
+        //     /**
+        //      * Add labels according to file types.
+        //      */
+        //     const fileExtension = file.filename.split('.').pop();
+        //     switch (fileExtension) {
+        //         case 'md':
+        //             await octokit.rest.issues.addLabels({
+        //                 owner,
+        //                 repo,
+        //                 issue_number: pr_number,
+        //                 labels: ['markdown'],
+        //             });
+        //         case 'js':
+        //             await octokit.rest.issues.addLabels({
+        //                 owner,
+        //                 repo,
+        //                 issue_number: pr_number,
+        //                 labels: ['javascript'],
+        //             });
+        //         case 'yml':
+        //             await octokit.rest.issues.addLabels({
+        //                 owner,
+        //                 repo,
+        //                 issue_number: pr_number,
+        //                 labels: ['yaml'],
+        //             });
+        //         case 'yaml':
+        //             await octokit.rest.issues.addLabels({
+        //                 owner,
+        //                 repo,
+        //                 issue_number: pr_number,
+        //                 labels: ['yaml'],
+        //             });
+        //     }
+        // }
 
         /**
          * Create a comment on the PR with the information we compiled from the

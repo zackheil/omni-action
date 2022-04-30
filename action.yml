@@ -13,6 +13,9 @@ inputs:
   token:
     description: "The token to use to access the GitHub API"
     required: true
+  triggered_by:
+    description: "Assists the action in knowing what to do by deducing the last trigger for the action"
+    required: true
 runs:
   using: "node16"
   main: "dist/index.js"

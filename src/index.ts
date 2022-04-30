@@ -108,8 +108,8 @@ import { createComment } from './util/comment';
             owner,
             repo,
             issue_number: pr_number,
-            body: createComment("# Zack Bot\n" +
-                `Pull Request #${pr_number} has been updated with: \n` +
+            body: createComment(
+                `This PR has been updated with: \n` +
                 ` - ${diffData.changes} changes \n` +
                 ` - ${diffData.additions} additions \n` +
                 ` - ${diffData.deletions} deletions \n\n\n`

@@ -8290,7 +8290,7 @@ var log = {
 // src/util/comment.ts
 var serviceName = "zackbot";
 var signature = `
-<sup>This comment was made by ${serviceName}. To view all commands, comment \`man ${serviceName}\`</sup>`;
+<sup>This comment was made by **${serviceName}**. To view all commands, comment \`man ${serviceName}\`</sup>`;
 var createComment = (msg) => msg + signature;
 
 // src/index.ts
@@ -8356,8 +8356,7 @@ var createComment = (msg) => msg + signature;
       owner,
       repo,
       issue_number: pr_number,
-      body: createComment(`# Zack Bot
-Pull Request #${pr_number} has been updated with: 
+      body: createComment(`This PR has been updated with: 
  - ${diffData.changes} changes 
  - ${diffData.additions} additions 
  - ${diffData.deletions} deletions 

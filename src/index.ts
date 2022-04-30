@@ -1,7 +1,8 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-
+import { log } from './util/log';
 (async () => {
+    log.info('starting my custom action and testing logs');
     try {
         /**
          * We need to fetch all the inputs that were provided to our action
@@ -11,6 +12,8 @@ import * as github from '@actions/github'
         const repo = core.getInput('repo', { required: true });
         const pr_number = parseInt(core.getInput('pr_number', { required: true }));
         const token = core.getInput('token', { required: true });
+
+        log.info(`Running action in ${owner}/${repo}#${pr_number}`);
 
         /**
          * Now we need to create an instance of Octokit which will use to call
@@ -104,12 +107,12 @@ import * as github from '@actions/github'
             owner,
             repo,
             issue_number: pr_number,
-            body: `
-        Pull Request #${pr_number} has been updated with: \n
-        - ${diffData.changes} changes \n
-        - ${diffData.additions} additions \n
-        - ${diffData.deletions} deletions \n
-      `
+            body: "# Zack Bot" +
+                "Pull Request #${pr_number} has been updated with: \n" +
+                " - ${diffData.changes} changes \n" +
+                " - ${diffData.additions} additions \n" +
+                " - ${diffData.deletions} deletions \n\n\n" +
+                "<sup><sup>To view all commands, comment `man zackbot`</sup></sup>"
         });
 
     } catch (error) {

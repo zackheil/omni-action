@@ -8350,7 +8350,14 @@ var log = {
       owner,
       repo,
       issue_number: pr_number,
-      body: "# Zack BotPull Request #${pr_number} has been updated with: \n - ${diffData.changes} changes \n - ${diffData.additions} additions \n - ${diffData.deletions} deletions \n\n\n<sup><sup>To view all commands, comment `man zackbot`</sup></sup>"
+      body: `# Zack Bot
+Pull Request #${pr_number} has been updated with: 
+ - ${diffData.changes} changes 
+ - ${diffData.additions} additions 
+ - ${diffData.deletions} deletions 
+
+
+<sup>To view all commands, comment \`man zackbot\`</sup>`
     });
   } catch (error) {
     core.setFailed(error.message);

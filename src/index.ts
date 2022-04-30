@@ -1,6 +1,7 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import { log } from './util/log';
+import { createComment } from './util/comment';
 (async () => {
     log.info('starting my custom action and testing logs');
     try {
@@ -107,12 +108,12 @@ import { log } from './util/log';
             owner,
             repo,
             issue_number: pr_number,
-            body: "# Zack Bot\n" +
+            body: createComment("# Zack Bot\n" +
                 `Pull Request #${pr_number} has been updated with: \n` +
                 ` - ${diffData.changes} changes \n` +
                 ` - ${diffData.additions} additions \n` +
-                ` - ${diffData.deletions} deletions \n\n\n` +
-                "<sup>To view all commands, comment `man zackbot`</sup>"
+                ` - ${diffData.deletions} deletions \n\n\n`
+            )
         });
 
     } catch (error) {

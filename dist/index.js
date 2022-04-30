@@ -8287,6 +8287,12 @@ var log = {
   error: (...data) => console.error(import_chalk.default.red("[error]:"), ...data)
 };
 
+// src/util/comment.ts
+var serviceName = "zackbot";
+var signature = `
+<sup>This comment was made by ${serviceName}. To view all commands, comment \`man ${serviceName}\`</sup>`;
+var createComment = (msg) => msg + signature;
+
 // src/index.ts
 (async () => {
   log.info("starting my custom action and testing logs");
@@ -8350,14 +8356,14 @@ var log = {
       owner,
       repo,
       issue_number: pr_number,
-      body: `# Zack Bot
+      body: createComment(`# Zack Bot
 Pull Request #${pr_number} has been updated with: 
  - ${diffData.changes} changes 
  - ${diffData.additions} additions 
  - ${diffData.deletions} deletions 
 
 
-<sup>To view all commands, comment \`man zackbot\`</sup>`
+`)
     });
   } catch (error) {
     core.setFailed(error.message);

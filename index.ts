@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 
-void async function () {
+(async () => {
     try {
         /**
          * We need to fetch all the inputs that were provided to our action
@@ -115,4 +115,4 @@ void async function () {
     } catch (error) {
         core.setFailed(error.message);
     }
-}
+})();

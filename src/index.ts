@@ -13,8 +13,9 @@ import { createComment } from './util/comment';
         const repo = core.getInput('repo', { required: true });
         const pr_number = parseInt(core.getInput('pr_number', { required: true }));
         const token = core.getInput('token', { required: true });
+        const triggerd_by = core.getInput('triggerd_by', { required: true });
 
-        log.info(`Running action in ${owner}/${repo}#${pr_number}`);
+        log.info(`Running action in ${owner}/${repo}#${pr_number} that was triggered by: ${triggerd_by}`);
 
         /**
          * Now we need to create an instance of Octokit which will use to call
@@ -119,17 +120,19 @@ import { createComment } from './util/comment';
          * Create a comment on the PR with the information we compiled from the
          * list of changed files.
          */
-        await octokit.rest.issues.createComment({
-            owner,
-            repo,
-            issue_number: pr_number,
-            body: createComment(
-                `This PR has been updated with: \n` +
-                ` - ${diffData.changes} changes \n` +
-                ` - ${diffData.additions} additions \n` +
-                ` - ${diffData.deletions} deletions \n\n\n`
-            )
-        });
+        const botMadeLastComment = latestComment.user?.login === 'github-actions[bot]' && latestComment.body?.includes('This comment was made by')
+        if (!botMadeLastComment)
+            await octokit.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: pr_number,
+                body: createComment(
+                    `This PR has been updated with: \n` +
+                    ` - ${diffData.changes} changes \n` +
+                    ` - ${diffData.additions} additions \n` +
+                    ` - ${diffData.deletions} deletions \n\n\n`
+                )
+            });
 
     } catch (error) {
         core.setFailed(error.message);

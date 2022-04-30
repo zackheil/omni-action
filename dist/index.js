@@ -8295,13 +8295,15 @@ var createComment = (msg) => msg + signature;
 
 // src/index.ts
 (async () => {
+  var _a, _b;
   log.info("starting my custom action and testing logs");
   try {
     const owner = core.getInput("owner", { required: true });
     const repo = core.getInput("repo", { required: true });
     const pr_number = parseInt(core.getInput("pr_number", { required: true }));
     const token = core.getInput("token", { required: true });
-    log.info(`Running action in ${owner}/${repo}#${pr_number}`);
+    const triggerd_by = core.getInput("triggerd_by", { required: true });
+    log.info(`Running action in ${owner}/${repo}#${pr_number} that was triggered by: ${triggerd_by}`);
     const octokit = github.getOctokit(token);
     const { data: changedFiles } = await octokit.rest.pulls.listFiles({
       owner,
@@ -8327,18 +8329,20 @@ var createComment = (msg) => msg + signature;
       acc.changes += file.changes;
       return acc;
     }, diffData);
-    await octokit.rest.issues.createComment({
-      owner,
-      repo,
-      issue_number: pr_number,
-      body: createComment(`This PR has been updated with: 
+    const botMadeLastComment = ((_a = latestComment.user) == null ? void 0 : _a.login) === "github-actions[bot]" && ((_b = latestComment.body) == null ? void 0 : _b.includes("This comment was made by"));
+    if (!botMadeLastComment)
+      await octokit.rest.issues.createComment({
+        owner,
+        repo,
+        issue_number: pr_number,
+        body: createComment(`This PR has been updated with: 
  - ${diffData.changes} changes 
  - ${diffData.additions} additions 
  - ${diffData.deletions} deletions 
 
 
 `)
-    });
+      });
   } catch (error) {
     core.setFailed(error.message);
   }

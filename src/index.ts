@@ -38,13 +38,16 @@ import { createComment } from './util/comment';
             repo,
             pull_number: pr_number,
         });
-        const { data: comments } = await octokit.rest.issues.listComments({
+
+        let today = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
+        const latestComment = (await octokit.rest.issues.listComments({
             owner,
             repo,
-            issue_number: pr_number
-        });
+            issue_number: pr_number,
+            since: today
+        })).data.slice(-1)[0];
 
-        log.info(JSON.stringify(comments, null, 2))
+        log.info(JSON.stringify(latestComment, null, 2))
         //     rest.issues.getComment({
         //     owner,
         //     repo,

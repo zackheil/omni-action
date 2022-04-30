@@ -8308,12 +8308,14 @@ var createComment = (msg) => msg + signature;
       repo,
       pull_number: pr_number
     });
-    const { data: comments } = await octokit.rest.issues.listComments({
+    let today = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
+    const latestComment = (await octokit.rest.issues.listComments({
       owner,
       repo,
-      issue_number: pr_number
-    });
-    log.info(JSON.stringify(comments, null, 2));
+      issue_number: pr_number,
+      since: today
+    })).data.slice(-1)[0];
+    log.info(JSON.stringify(latestComment, null, 2));
     let diffData = {
       additions: 0,
       deletions: 0,

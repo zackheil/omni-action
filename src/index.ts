@@ -9,14 +9,16 @@ import { createComment } from './util/comment';
          * We need to fetch all the inputs that were provided to our action
          * and store them in variables for us to use.
          **/
-        const context = core.getInput('context', { required: true });
+        const context = core.getInput('context', { required: true }) as any;
+        const ownr = context.repository_owner;
         const owner = core.getInput('owner', { required: true });
         const repo = core.getInput('repo', { required: true });
         const pr_number = parseInt(core.getInput('pr_number', { required: true }));
         const token = core.getInput('token', { required: true });
         const triggered_by = core.getInput('triggered_by', { required: true });
 
-        log.info(context);
+        // log.info(context);
+        log.info(ownr);
         log.info(`Running action in ${owner}/${repo}#${pr_number} that was triggered by: ${triggered_by}`);
 
         /**

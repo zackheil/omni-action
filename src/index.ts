@@ -15,7 +15,7 @@ const main = async () => {
         await routeEvent(logger, event);
     }
     catch (err) {
-        logger.error('An error occurred:', err.message);
+        logger.error('An error occurred:', err);
         setFailed(err.message);
     }
 };

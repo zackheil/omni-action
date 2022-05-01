@@ -6900,7 +6900,7 @@ var main = async () => {
   try {
     await routeEvent(logger2, event);
   } catch (err) {
-    logger2.error("An error occurred:", err.message);
+    logger2.error("An error occurred:", err);
     (0, import_core.setFailed)(err.message);
   }
 };
@@ -6911,3 +6911,4 @@ main();
  * Copyright (c) 2014-2017, Jon Schlinkert.
  * Released under the MIT License.
  */
+//# sourceMappingURL=index.js.map

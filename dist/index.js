@@ -6773,6 +6773,7 @@ var PullRequestCodeHandler = async (logger2, actionEvent) => {
   } = actionEvent;
   const pr_number = event.number;
   const repo = event.repository.name;
+  const branch = event.head_ref;
   logger2.info(`Running action in ${owner}/${repo}#${pr_number}.`);
   const octokit = github.getOctokit(token);
   const { data: changedFiles } = await octokit.rest.pulls.listFiles({
@@ -6785,45 +6786,8 @@ var PullRequestCodeHandler = async (logger2, actionEvent) => {
     deletions: 0,
     changes: 0
   };
-  diffData = changedFiles.reduce((acc, file) => {
-    acc.additions += file.additions;
-    acc.deletions += file.deletions;
-    acc.changes += file.changes;
-    return acc;
-  }, diffData);
-  for (const file of changedFiles) {
-    const fileExtension = file.filename.split(".").pop();
-    switch (fileExtension) {
-      case "md":
-        await octokit.rest.issues.addLabels({
-          owner,
-          repo,
-          issue_number: pr_number,
-          labels: ["markdown"]
-        });
-      case "js":
-        await octokit.rest.issues.addLabels({
-          owner,
-          repo,
-          issue_number: pr_number,
-          labels: ["javascript"]
-        });
-      case "yml":
-        await octokit.rest.issues.addLabels({
-          owner,
-          repo,
-          issue_number: pr_number,
-          labels: ["yaml"]
-        });
-      case "yaml":
-        await octokit.rest.issues.addLabels({
-          owner,
-          repo,
-          issue_number: pr_number,
-          labels: ["yaml"]
-        });
-    }
-  }
+  const files = (await octokit.rest.repos.getBranch({ owner, repo, branch })).data.commit.files;
+  logger2.info(JSON.stringify(files, null, 2));
   await octokit.rest.issues.createComment({
     owner,
     repo,

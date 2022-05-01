@@ -4,10 +4,7 @@ import { createComment, ILogger } from "../utils";
 
 export const PullRequestCodeHandler = async (logger: ILogger, actionEvent: GitHubActionEvent): Promise<void> => {
     logger.info('Starting PullRequestCodeHandler');
-    /**
-     * We need to fetch all the inputs that were provided to our action
-     * and store them in variables for us to use.
-     **/
+
     const {
         repository_owner: owner,
         event,
@@ -17,11 +14,7 @@ export const PullRequestCodeHandler = async (logger: ILogger, actionEvent: GitHu
     // TODO: add additional types for all event types
     const pr_number = (event as any).number
     const repo = event.repository.name;
-    // const owner = core.getInput('owner', { required: true });
-    // const repo = core.getInput('repo', { required: true });
-    // const pr_number = parseInt(core.getInput('pr_number', { required: true }));
-    // const token = core.getInput('token', { required: true });
-    // const triggered_by = core.getInput('triggered_by', { required: true });
+    const branch = (event as any).head_ref;
 
     logger.info(`Running action in ${owner}/${repo}#${pr_number}.`);
 
@@ -48,21 +41,6 @@ export const PullRequestCodeHandler = async (logger: ILogger, actionEvent: GitHu
         pull_number: pr_number,
     });
 
-    // let today = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
-    // const latestComment = (await octokit.rest.issues.listComments({
-    //     owner,
-    //     repo,
-    //     issue_number: pr_number,
-    //     since: today
-    // })).data.slice(-1)[0];
-
-    // log.info(JSON.stringify(latestComment, null, 2))
-    //     rest.issues.getComment({
-    //     owner,
-    //     repo,
-    //     issue_number: pr_number
-    // })
-
 
     /**
      * Contains the sum of all the additions, deletions, and changes
@@ -74,55 +52,59 @@ export const PullRequestCodeHandler = async (logger: ILogger, actionEvent: GitHu
         changes: 0
     };
 
+    // Testing getting repo content
+    const files = (await octokit.rest.repos.getBranch({ owner, repo, branch })).data.commit.files;
+    logger.info(JSON.stringify(files, null, 2))
+
     // Reference for how to use Array.reduce():
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
-    diffData = changedFiles.reduce((acc, file) => {
-        acc.additions += file.additions;
-        acc.deletions += file.deletions;
-        acc.changes += file.changes;
-        return acc;
-    }, diffData);
+    // diffData = changedFiles.reduce((acc, file) => {
+    //     acc.additions += file.additions;
+    //     acc.deletions += file.deletions;
+    //     acc.changes += file.changes;
+    //     return acc;
+    // }, diffData);
 
     /**
      * Loop over all the files changed in the PR and add labels according 
      * to files types.
      **/
-    for (const file of changedFiles) {
-        /**
-         * Add labels according to file types.
-         */
-        const fileExtension = file.filename.split('.').pop();
-        switch (fileExtension) {
-            case 'md':
-                await octokit.rest.issues.addLabels({
-                    owner,
-                    repo,
-                    issue_number: pr_number,
-                    labels: ['markdown'],
-                });
-            case 'js':
-                await octokit.rest.issues.addLabels({
-                    owner,
-                    repo,
-                    issue_number: pr_number,
-                    labels: ['javascript'],
-                });
-            case 'yml':
-                await octokit.rest.issues.addLabels({
-                    owner,
-                    repo,
-                    issue_number: pr_number,
-                    labels: ['yaml'],
-                });
-            case 'yaml':
-                await octokit.rest.issues.addLabels({
-                    owner,
-                    repo,
-                    issue_number: pr_number,
-                    labels: ['yaml'],
-                });
-        }
-    }
+    // for (const file of changedFiles) {
+    //     /**
+    //      * Add labels according to file types.
+    //      */
+    //     const fileExtension = file.filename.split('.').pop();
+    //     switch (fileExtension) {
+    //         case 'md':
+    //             await octokit.rest.issues.addLabels({
+    //                 owner,
+    //                 repo,
+    //                 issue_number: pr_number,
+    //                 labels: ['markdown'],
+    //             });
+    //         case 'js':
+    //             await octokit.rest.issues.addLabels({
+    //                 owner,
+    //                 repo,
+    //                 issue_number: pr_number,
+    //                 labels: ['javascript'],
+    //             });
+    //         case 'yml':
+    //             await octokit.rest.issues.addLabels({
+    //                 owner,
+    //                 repo,
+    //                 issue_number: pr_number,
+    //                 labels: ['yaml'],
+    //             });
+    //         case 'yaml':
+    //             await octokit.rest.issues.addLabels({
+    //                 owner,
+    //                 repo,
+    //                 issue_number: pr_number,
+    //                 labels: ['yaml'],
+    //             });
+    //     }
+    // }
 
     /**
      * Create a comment on the PR with the information we compiled from the

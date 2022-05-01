@@ -8305,6 +8305,7 @@ var createComment = (msg) => msg + signature;
     const pr_number = parseInt(core.getInput("pr_number", { required: true }));
     const token = core.getInput("token", { required: true });
     const triggered_by = core.getInput("triggered_by", { required: true });
+    log.info(typeof context);
     log.info(ownr);
     log.info(`Running action in ${owner}/${repo}#${pr_number} that was triggered by: ${triggered_by}`);
     const octokit = github.getOctokit(token);

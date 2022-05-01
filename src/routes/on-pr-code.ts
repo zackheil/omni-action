@@ -8,13 +8,13 @@ export const PullRequestCodeHandler = async (logger: ILogger, actionEvent: GitHu
     const {
         repository_owner: owner,
         event,
-        token
+        token,
+        head_ref: branch
     } = actionEvent;
 
     // TODO: add additional types for all event types
     const pr_number = (event as any).number
     const repo = event.repository.name;
-    const branch = (event as any).head_ref;
 
     logger.info(`Running action in ${owner}/${repo}#${pr_number}.`);
 

@@ -6769,11 +6769,11 @@ var PullRequestCodeHandler = async (logger2, actionEvent) => {
   const {
     repository_owner: owner,
     event,
-    token
+    token,
+    head_ref: branch
   } = actionEvent;
   const pr_number = event.number;
   const repo = event.repository.name;
-  const branch = event.head_ref;
   logger2.info(`Running action in ${owner}/${repo}#${pr_number}.`);
   const octokit = github.getOctokit(token);
   const { data: changedFiles } = await octokit.rest.pulls.listFiles({

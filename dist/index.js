@@ -6770,7 +6770,7 @@ var PullRequestCodeHandler = async (logger2, actionEvent) => {
     repository_owner: owner,
     event,
     token,
-    head_ref: branch
+    head_ref: ref
   } = actionEvent;
   const pr_number = event.number;
   const repo = event.repository.name;
@@ -6786,9 +6786,8 @@ var PullRequestCodeHandler = async (logger2, actionEvent) => {
     deletions: 0,
     changes: 0
   };
-  logger2.info({ msg: "inputs for getBranch", owner, repo, branch });
-  const branchData = (await octokit.rest.repos.getBranch({ owner, repo, branch })).data;
-  logger2.info(JSON.stringify(branchData, null, 2));
+  const branchFiles = (await octokit.rest.repos.getContent({ owner, repo, ref, path: "" })).data;
+  logger2.info(JSON.stringify(branchFiles, null, 2));
   await octokit.rest.issues.createComment({
     owner,
     repo,

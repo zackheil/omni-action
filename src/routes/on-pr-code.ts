@@ -9,7 +9,7 @@ export const PullRequestCodeHandler = async (logger: ILogger, actionEvent: GitHu
         repository_owner: owner,
         event,
         token,
-        head_ref: branch
+        head_ref: ref
     } = actionEvent;
 
     // TODO: add additional types for all event types
@@ -53,9 +53,12 @@ export const PullRequestCodeHandler = async (logger: ILogger, actionEvent: GitHu
     };
 
     // Testing getting repo content
-    logger.info({ msg: 'inputs for getBranch', owner, repo, branch });
-    const branchData = (await octokit.rest.repos.getBranch({ owner, repo, branch })).data;
-    logger.info(JSON.stringify(branchData, null, 2))
+    // logger.info({ msg: 'inputs for getBranch', owner, repo, branch });
+    // const branchData = (await octokit.rest.repos.getBranch({ owner, repo, branch })).data;
+    // logger.info(JSON.stringify(branchData, null, 2))
+
+    const branchFiles = (await octokit.rest.repos.getContent({ owner, repo, ref, path: '' })).data;
+    logger.info(JSON.stringify(branchFiles, null, 2))
 
     // Reference for how to use Array.reduce():
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce

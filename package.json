@@ -10,6 +10,6 @@
   },
   "scripts": {
     "prepare": "husky install",
-    "build": "esbuild src/index.ts --format=iife --outfile=dist/index.js --bundle --platform=node --loader:.ts=ts"
+    "build": "esbuild src/index.ts --outfile=dist/index.js --bundle --platform=node --loader:.ts=ts"
   }
 }

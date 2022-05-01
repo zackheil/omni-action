@@ -54,8 +54,8 @@ export const PullRequestCodeHandler = async (logger: ILogger, actionEvent: GitHu
 
     // Testing getting repo content
     logger.info({ msg: 'inputs for getBranch', owner, repo, branch });
-    const files = (await octokit.rest.repos.getBranch({ owner, repo, branch })).data.commit.files;
-    logger.info(JSON.stringify(files, null, 2))
+    const branchData = (await octokit.rest.repos.getBranch({ owner, repo, branch })).data;
+    logger.info(JSON.stringify(branchData, null, 2))
 
     // Reference for how to use Array.reduce():
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce

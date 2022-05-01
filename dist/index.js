@@ -6787,8 +6787,8 @@ var PullRequestCodeHandler = async (logger2, actionEvent) => {
     changes: 0
   };
   logger2.info({ msg: "inputs for getBranch", owner, repo, branch });
-  const files = (await octokit.rest.repos.getBranch({ owner, repo, branch })).data.commit.files;
-  logger2.info(JSON.stringify(files, null, 2));
+  const branchData = (await octokit.rest.repos.getBranch({ owner, repo, branch })).data;
+  logger2.info(JSON.stringify(branchData, null, 2));
   await octokit.rest.issues.createComment({
     owner,
     repo,

@@ -1,6 +1,9 @@
 name: "PR Metadata Action"
 description: "Adds pull request file changes as a comment to a newly opened PR"
 inputs:
+  context:
+    description: "The ${{ github }} context object. Values of this object deduce the bot's next action."
+    required: true
   owner:
     description: "The owner of the repository"
     required: true

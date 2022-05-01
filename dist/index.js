@@ -6768,11 +6768,11 @@ var PullRequestCodeHandler = async (logger2, actionEvent) => {
   logger2.info("Starting PullRequestCodeHandler");
   const {
     repository_owner: owner,
-    repository: repo,
     event,
     token
   } = actionEvent;
   const pr_number = event.number;
+  const repo = event.repository.name;
   logger2.info(`Running action in ${owner}/${repo}#${pr_number}.`);
   const octokit = github.getOctokit(token);
   const { data: changedFiles } = await octokit.rest.pulls.listFiles({
@@ -6845,12 +6845,12 @@ var PullRequestCommentHandler = async (logger2, actionEvent) => {
   logger2.info("Starting PullRequestCommentHandler");
   const {
     repository_owner: owner,
-    repository: repo,
     event,
     token
   } = actionEvent;
   const octokit = github2.getOctokit(token);
   const issue_number = event.issue.number;
+  const repo = event.repository.name;
   let today = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
   const latestComment = (await octokit.rest.issues.listComments({
     owner,

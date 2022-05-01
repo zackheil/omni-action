@@ -7,13 +7,13 @@ export const PullRequestCommentHandler = async (logger: ILogger, actionEvent: Gi
 
     const {
         repository_owner: owner,
-        repository: repo,
         event,
         token
     } = actionEvent;
 
     const octokit = github.getOctokit(token);
     const issue_number = event.issue.number;
+    const repo = event.repository.name;
 
     let today = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
     const latestComment = (await octokit.rest.issues.listComments({

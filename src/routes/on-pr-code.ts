@@ -10,13 +10,13 @@ export const PullRequestCodeHandler = async (logger: ILogger, actionEvent: GitHu
      **/
     const {
         repository_owner: owner,
-        repository: repo,
         event,
         token
     } = actionEvent;
 
     // TODO: add additional types for all event types
     const pr_number = (event as any).number
+    const repo = event.repository.name;
     // const owner = core.getInput('owner', { required: true });
     // const repo = core.getInput('repo', { required: true });
     // const pr_number = parseInt(core.getInput('pr_number', { required: true }));

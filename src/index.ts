@@ -6,16 +6,16 @@ import { logger as loggerConfig } from './utils';
 
 
 const main = async () => {
+    const event = JSON.parse(getInput('context', { required: true })) as GitHubActionEvent;
+    const debug = Boolean(getInput('debug'));
+    const logger = loggerConfig(debug);
+
+    logger.info('starting the test-action');
     try {
-        const event = JSON.parse(getInput('context', { required: true })) as GitHubActionEvent;
-        const debug = Boolean(getInput('debug'));
-        const logger = loggerConfig(debug);
-
-        logger.info('starting the test-action');
-
         await routeEvent(logger, event);
     }
     catch (err) {
+        logger.error('An error occurred:', err.message);
         setFailed(err.message);
     }
 };

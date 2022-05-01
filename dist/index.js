@@ -6868,13 +6868,14 @@ var routeEvent = async (logger2, actionEvent) => {
 
 // src/index.ts
 var main = async () => {
+  const event = JSON.parse((0, import_core.getInput)("context", { required: true }));
+  const debug = Boolean((0, import_core.getInput)("debug"));
+  const logger2 = logger(debug);
+  logger2.info("starting the test-action");
   try {
-    const event = JSON.parse((0, import_core.getInput)("context", { required: true }));
-    const debug = Boolean((0, import_core.getInput)("debug"));
-    const logger2 = logger(debug);
-    logger2.info("starting the test-action");
     await routeEvent(logger2, event);
   } catch (err) {
+    logger2.error("An error occurred:", err.message);
     (0, import_core.setFailed)(err.message);
   }
 };

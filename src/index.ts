@@ -5,18 +5,22 @@ import { GitHubActionEvent } from './types';
 import { logger as loggerConfig } from './utils';
 
 
-(async () => {
+const main = async () => {
     try {
         const event = JSON.parse(getInput('context', { required: true })) as GitHubActionEvent;
         const debug = Boolean(getInput('debug'));
-        const logger = loggerConfig(debug)
+        const logger = loggerConfig(debug);
+
+        logger.info('starting the test-action');
 
         await routeEvent(logger, event);
     }
     catch (err) {
         setFailed(err.message);
     }
-});
+};
+
+main();
 
 // (async () => {
 //     logger.info('starting my custom action and testing logs');

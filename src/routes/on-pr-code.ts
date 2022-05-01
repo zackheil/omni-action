@@ -3,6 +3,7 @@ import * as github from '@actions/github'
 import { createComment, ILogger } from "../utils";
 
 export const PullRequestCodeHandler = async (logger: ILogger, actionEvent: GitHubActionEvent): Promise<void> => {
+    logger.info('Starting PullRequestCodeHandler');
     /**
      * We need to fetch all the inputs that were provided to our action
      * and store them in variables for us to use.

@@ -10,6 +10,8 @@ import { PullRequestCommentHandler } from "./on-pr-comment";
 export const routeEvent = async (logger: ILogger, actionEvent: GitHubActionEvent) => {
     const { event_name, event } = actionEvent;
 
+    logger.info(`routing event: ${event_name}`);
+
     switch (event_name) {
         case 'issue_comment':
             // Actual issue comment handler

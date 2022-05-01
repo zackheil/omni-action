@@ -3,5 +3,5 @@ import { ILogger } from "../utils";
 
 export const ManualDispatchHandler = async (logger: ILogger, actionEvent: GitHubActionEvent): Promise<void> => {
     logger.info('Starting ManualDispatchHandler');
-    throw 'unconfigured route handler: ManualDispatchHandler';
+    throw new Error('unconfigured route handler: ManualDispatchHandler');
 };

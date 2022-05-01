@@ -6742,7 +6742,7 @@ var import_core = __toESM(require_core());
 // src/routes/on-issue.ts
 var IssueHandler = async (logger2, actionEvent) => {
   logger2.info("Starting IssueHandler");
-  throw "unconfigured route handler: IssueHandler";
+  throw new Error("unconfigured route handler: IssueHandler");
 };
 
 // src/routes/on-pr-code.ts
@@ -6841,7 +6841,7 @@ var PullRequestCodeHandler = async (logger2, actionEvent) => {
 // src/routes/on-pr-comment.ts
 var PullRequestCommentHandler = async (logger2, actionEvent) => {
   logger2.info("Starting PullRequestCommentHandler");
-  throw "unconfigured route handler: PullRequestCommentHandler";
+  throw new Error("unconfigured route handler: PullRequestCommentHandler");
 };
 
 // src/routes/index.ts
@@ -6856,13 +6856,13 @@ var routeEvent = async (logger2, actionEvent) => {
       else if ((_d = (_c = event.comment) == null ? void 0 : _c.html_url) == null ? void 0 : _d.includes("/pull/"))
         await PullRequestCommentHandler(logger2, actionEvent);
       else
-        throw `unconfigured route event: ${event_name} derivative`;
+        throw new Error(`unconfigured route event: ${event_name} derivative`);
       break;
     case "pull_request":
       await PullRequestCodeHandler(logger2, actionEvent);
       break;
     default:
-      throw `unconfigured route event: ${event_name}`;
+      throw new Error(`unconfigured route event: ${event_name}`);
   }
 };
 

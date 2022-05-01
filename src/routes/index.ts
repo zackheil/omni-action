@@ -20,13 +20,13 @@ export const routeEvent = async (logger: ILogger, actionEvent: GitHubActionEvent
             // Pull request comment handler
             else if (event.comment?.html_url?.includes('/pull/')) await PullRequestCommentHandler(logger, actionEvent);
 
-            else throw `unconfigured route event: ${event_name} derivative`
+            else throw new Error(`unconfigured route event: ${event_name} derivative`)
             break;
 
         case 'pull_request':
             await PullRequestCodeHandler(logger, actionEvent);
             break;
 
-        default: throw `unconfigured route event: ${event_name}`;
+        default: throw new Error(`unconfigured route event: ${event_name}`);
     }
 }

@@ -4,21 +4,9 @@ inputs:
   context:
     description: "The github context object. Values of this object deduce the bot's next action."
     required: true
-  owner:
-    description: "The owner of the repository"
-    required: true
-  repo:
-    description: "The name of the repository"
-    required: true
-  pr_number:
-    description: "The number of the pull request"
-    required: true
-  token:
-    description: "The token to use to access the GitHub API"
-    required: true
-  triggered_by:
-    description: "Assists the action in knowing what to do by deducing the last trigger for the action"
-    required: true
+  debug:
+    description: "An optional flag for additional logging within the action script."
+    required: false
 runs:
   using: "node16"
   main: "dist/index.js"

@@ -53,6 +53,7 @@ export const PullRequestCodeHandler = async (logger: ILogger, actionEvent: GitHu
     };
 
     // Testing getting repo content
+    logger.info({ msg: 'inputs for getBranch', owner, repo, branch });
     const files = (await octokit.rest.repos.getBranch({ owner, repo, branch })).data.commit.files;
     logger.info(JSON.stringify(files, null, 2))
 

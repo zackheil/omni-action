@@ -10,7 +10,7 @@ import { createComment } from './util/comment';
          * and store them in variables for us to use.
          **/
         const context = core.getInput('context', { required: true }) as any;
-        const ownr = context.repository_owner;
+        const contextObj = JSON.parse(context);
         const owner = core.getInput('owner', { required: true });
         const repo = core.getInput('repo', { required: true });
         const pr_number = parseInt(core.getInput('pr_number', { required: true }));
@@ -18,8 +18,7 @@ import { createComment } from './util/comment';
         const triggered_by = core.getInput('triggered_by', { required: true });
 
         // log.info(context);
-        log.info(typeof context);
-        log.info(ownr);
+        log.info(contextObj.repository_owner);
         log.info(`Running action in ${owner}/${repo}#${pr_number} that was triggered by: ${triggered_by}`);
 
         /**

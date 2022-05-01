@@ -8299,14 +8299,13 @@ var createComment = (msg) => msg + signature;
   log.info("starting my custom action and testing logs");
   try {
     const context = core.getInput("context", { required: true });
-    const ownr = context.repository_owner;
+    const contextObj = JSON.parse(context);
     const owner = core.getInput("owner", { required: true });
     const repo = core.getInput("repo", { required: true });
     const pr_number = parseInt(core.getInput("pr_number", { required: true }));
     const token = core.getInput("token", { required: true });
     const triggered_by = core.getInput("triggered_by", { required: true });
-    log.info(typeof context);
-    log.info(ownr);
+    log.info(contextObj.repository_owner);
     log.info(`Running action in ${owner}/${repo}#${pr_number} that was triggered by: ${triggered_by}`);
     const octokit = github.getOctokit(token);
     const { data: changedFiles } = await octokit.rest.pulls.listFiles({

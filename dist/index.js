@@ -6729,10 +6729,10 @@ var require_github = __commonJS({
     var Context = __importStar(require_context());
     var utils_1 = require_utils4();
     exports.context = new Context.Context();
-    function getOctokit2(token, options) {
+    function getOctokit3(token, options) {
       return new utils_1.GitHub(utils_1.getOctokitOptions(token, options));
     }
-    exports.getOctokit = getOctokit2;
+    exports.getOctokit = getOctokit3;
   }
 });
 
@@ -6839,9 +6839,34 @@ var PullRequestCodeHandler = async (logger2, actionEvent) => {
 };
 
 // src/routes/on-pr-comment.ts
+var github2 = __toESM(require_github());
 var PullRequestCommentHandler = async (logger2, actionEvent) => {
+  var _a, _b;
   logger2.info("Starting PullRequestCommentHandler");
-  throw new Error("unconfigured route handler: PullRequestCommentHandler");
+  const {
+    repository_owner: owner,
+    repository: repo,
+    event,
+    token
+  } = actionEvent;
+  const octokit = github2.getOctokit(token);
+  const issue_number = event.issue.number;
+  let today = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
+  const latestComment = (await octokit.rest.issues.listComments({
+    owner,
+    repo,
+    issue_number,
+    since: today
+  })).data.slice(-1)[0];
+  logger2.info(JSON.stringify(latestComment, null, 2));
+  const botMadeLastComment = ((_a = latestComment.user) == null ? void 0 : _a.login) === "github-actions[bot]" && ((_b = latestComment.body) == null ? void 0 : _b.includes("This comment was made by"));
+  if (!botMadeLastComment)
+    await octokit.rest.issues.createComment({
+      owner,
+      repo,
+      issue_number,
+      body: createComment("You said: " + latestComment.body)
+    });
 };
 
 // src/routes/index.ts

@@ -1,6 +1,7 @@
+import { octokit } from "..";
 import { GitHubActionEvent } from "../types";
-import { createComment, ILogger } from "../utils";
-import * as github from '@actions/github'
+import { BotHelper, ILogger } from "../utils";
+
 
 export const PullRequestCommentHandler = async (logger: ILogger, actionEvent: GitHubActionEvent): Promise<void> => {
     logger.info('Starting PullRequestCommentHandler');
@@ -11,7 +12,6 @@ export const PullRequestCommentHandler = async (logger: ILogger, actionEvent: Gi
         token
     } = actionEvent;
 
-    const octokit = github.getOctokit(token);
     const issue_number = event.issue.number;
     const repo = event.repository.name;
 
@@ -29,6 +29,6 @@ export const PullRequestCommentHandler = async (logger: ILogger, actionEvent: Gi
         owner,
         repo,
         issue_number,
-        body: createComment('You said: ' + latestComment.body)
+        body: BotHelper.makeComment('You said: ' + latestComment.body)
     });
 };

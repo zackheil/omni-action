@@ -1,6 +1,6 @@
 import { GitHubActionEvent } from "../types";
-import * as github from '@actions/github'
-import { createComment, ILogger } from "../utils";
+import { BotHelper, ILogger } from "../utils";
+import { octokit } from "..";
 
 export const PullRequestCodeHandler = async (logger: ILogger, actionEvent: GitHubActionEvent): Promise<void> => {
     logger.info('Starting PullRequestCodeHandler');
@@ -17,16 +17,6 @@ export const PullRequestCodeHandler = async (logger: ILogger, actionEvent: GitHu
     const repo = event.repository.name;
 
     logger.info(`Running action in ${owner}/${repo}#${pr_number}.`);
-
-    /**
-     * Now we need to create an instance of Octokit which will use to call
-     * GitHub's REST API endpoints.
-     * We will pass the token as an argument to the constructor. This token
-     * will be used to authenticate our requests.
-     * You can find all the information about how to use Octokit here:
-     * https://octokit.github.io/rest.js/v18
-     **/
-    const octokit = github.getOctokit(token);
 
     /**
      * We need to fetch the list of files that were changes in the Pull Request
@@ -116,15 +106,16 @@ export const PullRequestCodeHandler = async (logger: ILogger, actionEvent: GitHu
      */
     // const botMadeLastComment = latestComment.user?.login === 'github-actions[bot]' && latestComment.body?.includes('This comment was made by')
     // if (!botMadeLastComment)
-    await octokit.rest.issues.createComment({
-        owner,
-        repo,
-        issue_number: pr_number,
-        body: createComment(
-            `This PR has been updated with: \n` +
-            ` - ${diffData.changes} changes \n` +
-            ` - ${diffData.additions} additions \n` +
-            ` - ${diffData.deletions} deletions \n\n\n`
-        )
-    });
+    if (false)
+        await octokit.rest.issues.createComment({
+            owner,
+            repo,
+            issue_number: pr_number,
+            body: BotHelper.makeComment(
+                `This PR has been updated with: \n` +
+                ` - ${diffData.changes} changes \n` +
+                ` - ${diffData.additions} additions \n` +
+                ` - ${diffData.deletions} deletions \n\n\n`
+            )
+        });
 };

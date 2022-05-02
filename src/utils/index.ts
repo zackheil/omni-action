@@ -1,2 +1,2 @@
 export * from './logger'
-export * from './comment'
+export * from './bot-helper'

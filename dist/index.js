@@ -7,6 +7,10 @@ var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
@@ -16,6 +20,7 @@ var __copyProps = (to, from, except, desc) => {
   return to;
 };
 var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target, mod));
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // node_modules/@actions/core/lib/utils.js
 var require_utils = __commonJS({
@@ -6390,7 +6395,7 @@ var require_dist_node9 = __commonJS({
       }
     };
     var VERSION = "5.13.0";
-    function endpointsToMethods(octokit, endpointsMap) {
+    function endpointsToMethods(octokit2, endpointsMap) {
       const newMethods = {};
       for (const [scope, endpoints] of Object.entries(endpointsMap)) {
         for (const [methodName, endpoint] of Object.entries(endpoints)) {
@@ -6405,16 +6410,16 @@ var require_dist_node9 = __commonJS({
           }
           const scopeMethods = newMethods[scope];
           if (decorations) {
-            scopeMethods[methodName] = decorate(octokit, scope, methodName, endpointDefaults, decorations);
+            scopeMethods[methodName] = decorate(octokit2, scope, methodName, endpointDefaults, decorations);
             continue;
           }
-          scopeMethods[methodName] = octokit.request.defaults(endpointDefaults);
+          scopeMethods[methodName] = octokit2.request.defaults(endpointDefaults);
         }
       }
       return newMethods;
     }
-    function decorate(octokit, scope, methodName, defaults, decorations) {
-      const requestWithDefaults = octokit.request.defaults(defaults);
+    function decorate(octokit2, scope, methodName, defaults, decorations) {
+      const requestWithDefaults = octokit2.request.defaults(defaults);
       function withDecorations(...args) {
         let options = requestWithDefaults.endpoint.merge(...args);
         if (decorations.mapToData) {
@@ -6426,16 +6431,16 @@ var require_dist_node9 = __commonJS({
         }
         if (decorations.renamed) {
           const [newScope, newMethodName] = decorations.renamed;
-          octokit.log.warn(`octokit.${scope}.${methodName}() has been renamed to octokit.${newScope}.${newMethodName}()`);
+          octokit2.log.warn(`octokit.${scope}.${methodName}() has been renamed to octokit.${newScope}.${newMethodName}()`);
         }
         if (decorations.deprecated) {
-          octokit.log.warn(decorations.deprecated);
+          octokit2.log.warn(decorations.deprecated);
         }
         if (decorations.renamedParameters) {
           const options2 = requestWithDefaults.endpoint.merge(...args);
           for (const [name, alias] of Object.entries(decorations.renamedParameters)) {
             if (name in options2) {
-              octokit.log.warn(`"${name}" parameter is deprecated for "octokit.${scope}.${methodName}()". Use "${alias}" instead`);
+              octokit2.log.warn(`"${name}" parameter is deprecated for "octokit.${scope}.${methodName}()". Use "${alias}" instead`);
               if (!(alias in options2)) {
                 options2[alias] = options2[name];
               }
@@ -6448,15 +6453,15 @@ var require_dist_node9 = __commonJS({
       }
       return Object.assign(withDecorations, requestWithDefaults);
     }
-    function restEndpointMethods(octokit) {
-      const api = endpointsToMethods(octokit, Endpoints);
+    function restEndpointMethods(octokit2) {
+      const api = endpointsToMethods(octokit2, Endpoints);
       return {
         rest: api
       };
     }
     restEndpointMethods.VERSION = VERSION;
-    function legacyRestEndpointMethods(octokit) {
-      const api = endpointsToMethods(octokit, Endpoints);
+    function legacyRestEndpointMethods(octokit2) {
+      const api = endpointsToMethods(octokit2, Endpoints);
       return _objectSpread2(_objectSpread2({}, api), {}, {
         rest: api
       });
@@ -6543,9 +6548,9 @@ var require_dist_node10 = __commonJS({
       response.data.total_count = totalCount;
       return response;
     }
-    function iterator(octokit, route, parameters) {
-      const options = typeof route === "function" ? route.endpoint(parameters) : octokit.request.endpoint(route, parameters);
-      const requestMethod = typeof route === "function" ? route : octokit.request;
+    function iterator(octokit2, route, parameters) {
+      const options = typeof route === "function" ? route.endpoint(parameters) : octokit2.request.endpoint(route, parameters);
+      const requestMethod = typeof route === "function" ? route : octokit2.request;
       const method = options.method;
       const headers = options.headers;
       let url = options.url;
@@ -6583,14 +6588,14 @@ var require_dist_node10 = __commonJS({
         })
       };
     }
-    function paginate(octokit, route, parameters, mapFn) {
+    function paginate(octokit2, route, parameters, mapFn) {
       if (typeof parameters === "function") {
         mapFn = parameters;
         parameters = void 0;
       }
-      return gather(octokit, [], iterator(octokit, route, parameters)[Symbol.asyncIterator](), mapFn);
+      return gather(octokit2, [], iterator(octokit2, route, parameters)[Symbol.asyncIterator](), mapFn);
     }
-    function gather(octokit, results, iterator2, mapFn) {
+    function gather(octokit2, results, iterator2, mapFn) {
       return iterator2.next().then((result) => {
         if (result.done) {
           return results;
@@ -6603,7 +6608,7 @@ var require_dist_node10 = __commonJS({
         if (earlyExit) {
           return results;
         }
-        return gather(octokit, results, iterator2, mapFn);
+        return gather(octokit2, results, iterator2, mapFn);
       });
     }
     var composePaginateRest = Object.assign(paginate, {
@@ -6617,10 +6622,10 @@ var require_dist_node10 = __commonJS({
         return false;
       }
     }
-    function paginateRest(octokit) {
+    function paginateRest(octokit2) {
       return {
-        paginate: Object.assign(paginate.bind(null, octokit), {
-          iterator: iterator.bind(null, octokit)
+        paginate: Object.assign(paginate.bind(null, octokit2), {
+          iterator: iterator.bind(null, octokit2)
         })
       };
     }
@@ -6729,14 +6734,20 @@ var require_github = __commonJS({
     var Context = __importStar(require_context());
     var utils_1 = require_utils4();
     exports.context = new Context.Context();
-    function getOctokit3(token, options) {
+    function getOctokit2(token, options) {
       return new utils_1.GitHub(utils_1.getOctokitOptions(token, options));
     }
-    exports.getOctokit = getOctokit3;
+    exports.getOctokit = getOctokit2;
   }
 });
 
 // src/index.ts
+var src_exports = {};
+__export(src_exports, {
+  octokit: () => octokit,
+  serviceName: () => serviceName
+});
+module.exports = __toCommonJS(src_exports);
 var import_core = __toESM(require_core());
 
 // src/routes/on-issue.ts
@@ -6744,9 +6755,6 @@ var IssueHandler = async (logger2, actionEvent) => {
   logger2.info("Starting IssueHandler");
   throw new Error("unconfigured route handler: IssueHandler");
 };
-
-// src/routes/on-pr-code.ts
-var github = __toESM(require_github());
 
 // src/utils/logger.ts
 var logger = (debug) => ({
@@ -6757,25 +6765,28 @@ var logger = (debug) => ({
   error: (...data) => console.error("[error]:", ...data)
 });
 
-// src/utils/comment.ts
-var serviceName = "zackbot";
+// src/utils/bot-helper.ts
 var signature = `
-<sup>This comment was made by **${serviceName}**. To view all commands, comment \`man ${serviceName}\`</sup>`;
-var createComment = (msg) => msg + signature;
+<sup>This comment was made by **${serviceName}**. To view all commands, comment \`${serviceName} help\`</sup>`;
+var BotHelper = {
+  isAuthorized: (comment) => comment.author_association === "OWNER" || comment.author_association === "COLLABORATOR",
+  makeComment: (msg) => msg + signature,
+  getState: (event2) => {
+  }
+};
 
 // src/routes/on-pr-code.ts
 var PullRequestCodeHandler = async (logger2, actionEvent) => {
   logger2.info("Starting PullRequestCodeHandler");
   const {
     repository_owner: owner,
-    event,
+    event: event2,
     token,
     head_ref: ref
   } = actionEvent;
-  const pr_number = event.number;
-  const repo = event.repository.name;
+  const pr_number = event2.number;
+  const repo = event2.repository.name;
   logger2.info(`Running action in ${owner}/${repo}#${pr_number}.`);
-  const octokit = github.getOctokit(token);
   const { data: changedFiles } = await octokit.rest.pulls.listFiles({
     owner,
     repo,
@@ -6788,33 +6799,32 @@ var PullRequestCodeHandler = async (logger2, actionEvent) => {
   };
   const branchFiles = (await octokit.rest.repos.getContent({ owner, repo, ref, path: "" })).data;
   logger2.info(JSON.stringify(branchFiles, null, 2));
-  await octokit.rest.issues.createComment({
-    owner,
-    repo,
-    issue_number: pr_number,
-    body: createComment(`This PR has been updated with: 
+  if (false)
+    await octokit.rest.issues.createComment({
+      owner,
+      repo,
+      issue_number: pr_number,
+      body: BotHelper2.makeComment(`This PR has been updated with: 
  - ${diffData.changes} changes 
  - ${diffData.additions} additions 
  - ${diffData.deletions} deletions 
 
 
 `)
-  });
+    });
 };
 
 // src/routes/on-pr-comment.ts
-var github2 = __toESM(require_github());
 var PullRequestCommentHandler = async (logger2, actionEvent) => {
   var _a, _b;
   logger2.info("Starting PullRequestCommentHandler");
   const {
     repository_owner: owner,
-    event,
+    event: event2,
     token
   } = actionEvent;
-  const octokit = github2.getOctokit(token);
-  const issue_number = event.issue.number;
-  const repo = event.repository.name;
+  const issue_number = event2.issue.number;
+  const repo = event2.repository.name;
   let today = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
   const latestComment = (await octokit.rest.issues.listComments({
     owner,
@@ -6829,20 +6839,20 @@ var PullRequestCommentHandler = async (logger2, actionEvent) => {
       owner,
       repo,
       issue_number,
-      body: createComment("You said: " + latestComment.body)
+      body: BotHelper.makeComment("You said: " + latestComment.body)
     });
 };
 
 // src/routes/index.ts
 var routeEvent = async (logger2, actionEvent) => {
   var _a, _b, _c, _d;
-  const { event_name, event } = actionEvent;
+  const { event_name, event: event2 } = actionEvent;
   logger2.info(`routing event: ${event_name}`);
   switch (event_name) {
     case "issue_comment":
-      if ((_b = (_a = event.comment) == null ? void 0 : _a.html_url) == null ? void 0 : _b.includes("/issues/"))
+      if ((_b = (_a = event2.comment) == null ? void 0 : _a.html_url) == null ? void 0 : _b.includes("/issues/"))
         await IssueHandler(logger2, actionEvent);
-      else if ((_d = (_c = event.comment) == null ? void 0 : _c.html_url) == null ? void 0 : _d.includes("/pull/"))
+      else if ((_d = (_c = event2.comment) == null ? void 0 : _c.html_url) == null ? void 0 : _d.includes("/pull/"))
         await PullRequestCommentHandler(logger2, actionEvent);
       else
         throw new Error(`unconfigured route event: ${event_name} derivative`);
@@ -6856,8 +6866,11 @@ var routeEvent = async (logger2, actionEvent) => {
 };
 
 // src/index.ts
+var import_github = __toESM(require_github());
+var event = JSON.parse((0, import_core.getInput)("context", { required: true }));
+var octokit = (0, import_github.getOctokit)(event.token);
+var serviceName = "zackbot";
 var main = async () => {
-  const event = JSON.parse((0, import_core.getInput)("context", { required: true }));
   const debug = Boolean((0, import_core.getInput)("debug"));
   const logger2 = logger(debug);
   logger2.info("starting the test-action");
@@ -6869,6 +6882,11 @@ var main = async () => {
   }
 };
 main();
+// Annotate the CommonJS export names for ESM import in node:
+0 && (module.exports = {
+  octokit,
+  serviceName
+});
 /*!
  * is-plain-object <https://github.com/jonschlinkert/is-plain-object>
  *

@@ -6835,6 +6835,7 @@ var PullRequestCommentHandler = async (logger2, actionEvent) => {
   logger2.info(JSON.stringify(latestComment, null, 2));
   const botMadeLastComment = ((_a = latestComment.user) == null ? void 0 : _a.login) === "github-actions[bot]" && ((_b = latestComment.body) == null ? void 0 : _b.includes("This comment was made by"));
   if ((_c = latestComment.body) == null ? void 0 : _c.toLowerCase().includes("zackbot publish beta")) {
+    logger2.info(`triggering workflow for: ${owner}/${repo}`);
     await octokit.rest.actions.createWorkflowDispatch({
       owner,
       repo,

@@ -29,7 +29,7 @@ export const PullRequestCommentHandler = async (logger: ILogger, actionEvent: Gi
         await octokit.rest.actions.createWorkflowDispatch({
             owner,
             repo: 'omni-action',
-            ref: repo,
+            ref: 'main',
             workflow_id: 'update-version.yml',
             inputs: {
                 version: '0.5.10-beta',

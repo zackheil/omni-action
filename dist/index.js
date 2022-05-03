@@ -6734,10 +6734,10 @@ var require_github = __commonJS({
     var Context = __importStar(require_context());
     var utils_1 = require_utils4();
     exports.context = new Context.Context();
-    function getOctokit2(token, options) {
+    function getOctokit3(token, options) {
       return new utils_1.GitHub(utils_1.getOctokitOptions(token, options));
     }
-    exports.getOctokit = getOctokit2;
+    exports.getOctokit = getOctokit3;
   }
 });
 
@@ -6815,6 +6815,7 @@ var PullRequestCodeHandler = async (logger2, actionEvent) => {
 };
 
 // src/routes/on-pr-comment.ts
+var import_github = __toESM(require_github());
 var PullRequestCommentHandler = async (logger2, actionEvent) => {
   var _a, _b, _c;
   logger2.info("Starting PullRequestCommentHandler");
@@ -6832,18 +6833,18 @@ var PullRequestCommentHandler = async (logger2, actionEvent) => {
     issue_number,
     since: today
   })).data.slice(-1)[0];
+  const actionOcto = (0, import_github.getOctokit)(actionEvent.wfToken).rest.actions;
   logger2.info(JSON.stringify(latestComment, null, 2));
   const botMadeLastComment = ((_a = latestComment.user) == null ? void 0 : _a.login) === "github-actions[bot]" && ((_b = latestComment.body) == null ? void 0 : _b.includes("This comment was made by"));
   if ((_c = latestComment.body) == null ? void 0 : _c.toLowerCase().includes("zackbot publish beta")) {
     logger2.info(`triggering workflow for: ${owner}/${repo}`);
-    await octokit.rest.actions.createWorkflowDispatch({
+    await actionOcto.createWorkflowDispatch({
       owner,
       repo,
       ref: "main",
       workflow_id: "update-version.yml",
       inputs: {
         version: "0.5.10-beta",
-        token: actionEvent.wfToken,
         tag: "beta"
       }
     });
@@ -6879,10 +6880,10 @@ var routeEvent = async (logger2, actionEvent) => {
 };
 
 // src/index.ts
-var import_github = __toESM(require_github());
+var import_github2 = __toESM(require_github());
 var event = JSON.parse((0, import_core.getInput)("context", { required: true }));
 var wfToken = (0, import_core.getInput)("token", { required: true });
-var octokit = (0, import_github.getOctokit)(event.token);
+var octokit = (0, import_github2.getOctokit)(event.token);
 var main = async () => {
   const debug = Boolean((0, import_core.getInput)("debug"));
   const logger2 = logger(debug);

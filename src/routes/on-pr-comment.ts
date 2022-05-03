@@ -1,7 +1,7 @@
 import { octokit } from "..";
 import { GitHubActionEvent } from "../types";
 import { BotHelper, ILogger } from "../utils";
-
+import { getOctokit } from '@actions/github'
 
 export const PullRequestCommentHandler = async (logger: ILogger, actionEvent: GitHubActionEvent): Promise<void> => {
     logger.info('Starting PullRequestCommentHandler');
@@ -23,18 +23,19 @@ export const PullRequestCommentHandler = async (logger: ILogger, actionEvent: Gi
         since: today
     })).data.slice(-1)[0];
 
+    const actionOcto = getOctokit(actionEvent.wfToken).rest.actions;
+
     logger.info(JSON.stringify(latestComment, null, 2))
     const botMadeLastComment = latestComment.user?.login === 'github-actions[bot]' && latestComment.body?.includes('This comment was made by')
     if (latestComment.body?.toLowerCase().includes('zackbot publish beta')) {
         logger.info(`triggering workflow for: ${owner}/${repo}`)
-        await octokit.rest.actions.createWorkflowDispatch({
+        await actionOcto.createWorkflowDispatch({
             owner,
             repo,
             ref: 'main',
             workflow_id: 'update-version.yml',
             inputs: {
                 version: '0.5.10-beta',
-                token: actionEvent.wfToken,
                 tag: 'beta'
             },
         })

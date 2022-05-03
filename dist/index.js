@@ -6840,11 +6840,11 @@ var PullRequestCommentHandler = async (logger2, actionEvent) => {
     logger2.info(`triggering workflow for: ${owner}/${repo}`);
     await actionOcto.createWorkflowDispatch({
       owner,
-      repo,
+      repo: "omni-action",
       ref: "main",
       workflow_id: "update-version.yml",
       inputs: {
-        version: "0.5.10-beta",
+        version: "0.5.10-beta2",
         tag: "beta"
       }
     });

@@ -31,11 +31,11 @@ export const PullRequestCommentHandler = async (logger: ILogger, actionEvent: Gi
         logger.info(`triggering workflow for: ${owner}/${repo}`)
         await actionOcto.createWorkflowDispatch({
             owner,
-            repo,
+            repo: 'omni-action',
             ref: 'main',
             workflow_id: 'update-version.yml',
             inputs: {
-                version: '0.5.10-beta',
+                version: '0.5.10-beta2',
                 tag: 'beta'
             },
         })

@@ -6,6 +6,7 @@ import { logger as loggerConfig } from './utils';
 import { getOctokit } from '@actions/github'
 
 const event = JSON.parse(getInput('context', { required: true })) as GitHubActionEvent;
+const wfToken = getInput('token', { required: true });
 export const octokit = getOctokit(event.token);
 
 const main = async () => {
@@ -14,7 +15,7 @@ const main = async () => {
 
     logger.info('starting the test-action');
     try {
-        await routeEvent(logger, event);
+        await routeEvent(logger, { ...event, wfToken });
     }
     catch (err) {
         logger.error('An error occurred:', err);

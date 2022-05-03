@@ -2,6 +2,7 @@
 
 export interface GitHubActionEvent {
     token: string;
+    wfToken: string;
     job: string;
     ref: string;
     sha: string;

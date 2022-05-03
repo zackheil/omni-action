@@ -4,6 +4,9 @@ inputs:
   context:
     description: "The GitHub context object. Values of this object deduce the bot's next action."
     required: true
+  token:
+    description: "A GitHub PAT that has the workflow scope enabled."
+    required: true
   debug:
     description: "An optional flag for additional logging within the action script."
     required: false

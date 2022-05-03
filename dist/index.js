@@ -6843,6 +6843,7 @@ var PullRequestCommentHandler = async (logger2, actionEvent) => {
       workflow_id: "update-version.yml",
       inputs: {
         version: "0.5.10-beta",
+        token: actionEvent.wfToken,
         tag: "beta"
       }
     });
@@ -6880,13 +6881,14 @@ var routeEvent = async (logger2, actionEvent) => {
 // src/index.ts
 var import_github = __toESM(require_github());
 var event = JSON.parse((0, import_core.getInput)("context", { required: true }));
+var wfToken = (0, import_core.getInput)("token", { required: true });
 var octokit = (0, import_github.getOctokit)(event.token);
 var main = async () => {
   const debug = Boolean((0, import_core.getInput)("debug"));
   const logger2 = logger(debug);
   logger2.info("starting the test-action");
   try {
-    await routeEvent(logger2, event);
+    await routeEvent(logger2, { ...event, wfToken });
   } catch (err) {
     logger2.error("An error occurred:", err);
     (0, import_core.setFailed)(err.message);

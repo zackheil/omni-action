@@ -34,6 +34,7 @@ export const PullRequestCommentHandler = async (logger: ILogger, actionEvent: Gi
             workflow_id: 'update-version.yml',
             inputs: {
                 version: '0.5.10-beta',
+                token: actionEvent.wfToken,
                 tag: 'beta'
             },
         })

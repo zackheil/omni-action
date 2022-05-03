@@ -6837,7 +6837,7 @@ var PullRequestCommentHandler = async (logger2, actionEvent) => {
   if ((_c = latestComment.body) == null ? void 0 : _c.toLowerCase().includes("zackbot publish beta")) {
     await octokit.rest.actions.createWorkflowDispatch({
       owner,
-      repo: "omni-action",
+      repo,
       ref: "main",
       workflow_id: "update-version.yml",
       inputs: {

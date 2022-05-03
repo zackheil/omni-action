@@ -6744,8 +6744,7 @@ var require_github = __commonJS({
 // src/index.ts
 var src_exports = {};
 __export(src_exports, {
-  octokit: () => octokit,
-  serviceName: () => serviceName
+  octokit: () => octokit
 });
 module.exports = __toCommonJS(src_exports);
 var import_core = __toESM(require_core());
@@ -6766,6 +6765,7 @@ var logger = (debug) => ({
 });
 
 // src/utils/bot-helper.ts
+var serviceName = "zackbot";
 var signature = `
 <sup>This comment was made by **${serviceName}**. To view all commands, comment \`${serviceName} help\`</sup>`;
 var BotHelper = {
@@ -6816,7 +6816,7 @@ var PullRequestCodeHandler = async (logger2, actionEvent) => {
 
 // src/routes/on-pr-comment.ts
 var PullRequestCommentHandler = async (logger2, actionEvent) => {
-  var _a, _b;
+  var _a, _b, _c;
   logger2.info("Starting PullRequestCommentHandler");
   const {
     repository_owner: owner,
@@ -6834,7 +6834,18 @@ var PullRequestCommentHandler = async (logger2, actionEvent) => {
   })).data.slice(-1)[0];
   logger2.info(JSON.stringify(latestComment, null, 2));
   const botMadeLastComment = ((_a = latestComment.user) == null ? void 0 : _a.login) === "github-actions[bot]" && ((_b = latestComment.body) == null ? void 0 : _b.includes("This comment was made by"));
-  if (!botMadeLastComment)
+  if ((_c = latestComment.body) == null ? void 0 : _c.toLowerCase().includes("zackbot publish beta")) {
+    await octokit.rest.actions.createWorkflowDispatch({
+      owner,
+      repo: "omni-action",
+      ref: repo,
+      workflow_id: "update-version.yml",
+      inputs: {
+        version: "0.5.10-beta",
+        tag: "beta"
+      }
+    });
+  } else if (!botMadeLastComment)
     await octokit.rest.issues.createComment({
       owner,
       repo,
@@ -6869,7 +6880,6 @@ var routeEvent = async (logger2, actionEvent) => {
 var import_github = __toESM(require_github());
 var event = JSON.parse((0, import_core.getInput)("context", { required: true }));
 var octokit = (0, import_github.getOctokit)(event.token);
-var serviceName = "zackbot";
 var main = async () => {
   const debug = Boolean((0, import_core.getInput)("debug"));
   const logger2 = logger(debug);
@@ -6884,8 +6894,7 @@ var main = async () => {
 main();
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  octokit,
-  serviceName
+  octokit
 });
 /*!
  * is-plain-object <https://github.com/jonschlinkert/is-plain-object>

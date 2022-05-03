@@ -7,7 +7,6 @@ import { getOctokit } from '@actions/github'
 
 const event = JSON.parse(getInput('context', { required: true })) as GitHubActionEvent;
 export const octokit = getOctokit(event.token);
-export const serviceName = 'zackbot';
 
 const main = async () => {
     const debug = Boolean(getInput('debug'));

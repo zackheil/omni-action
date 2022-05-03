@@ -25,10 +25,24 @@ export const PullRequestCommentHandler = async (logger: ILogger, actionEvent: Gi
 
     logger.info(JSON.stringify(latestComment, null, 2))
     const botMadeLastComment = latestComment.user?.login === 'github-actions[bot]' && latestComment.body?.includes('This comment was made by')
-    if (!botMadeLastComment) await octokit.rest.issues.createComment({
+    if (latestComment.body?.toLowerCase().includes('zackbot publish beta')) {
+        await octokit.rest.actions.createWorkflowDispatch({
+            owner,
+            repo: 'omni-action',
+            ref: repo,
+            workflow_id: 'update-version.yml',
+            inputs: {
+                version: '0.5.10-beta',
+                tag: 'beta'
+            },
+        })
+    }
+    else if (!botMadeLastComment) await octokit.rest.issues.createComment({
         owner,
         repo,
         issue_number,
         body: BotHelper.makeComment('You said: ' + latestComment.body)
     });
+
+
 };

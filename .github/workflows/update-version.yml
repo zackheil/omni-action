@@ -1,0 +1,43 @@
+name: Publish NPM Package
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      tag:
+        required: true
+        type: string
+
+jobs:
+  publish:
+    name: Publish NPM Package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: "0"
+      - name: Checkout Branch
+        uses: actions/checkout@v2
+      - name: Setup NodeJS
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+          cache: npm
+          cache-dependency-path: package-lock.json
+          registry-url: "https://npm.pkg.github.com"
+      - name: Create NPM Version
+        run: npm version $(VERSION) --no-git-tag-version
+        env:
+          VERSION: ${{ inputs.version }}
+      - name: Install Dependencies
+        run: npm install
+      - name: Build Source Code
+        run: npm run build
+      - name: Attach Registry
+        run: echo "@tfs-code:registry=https://npm.pkg.github.com" > .npmrc
+      - name: Publish Package Version
+        run: npm publish $(TAG)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ inputs.tag }}
